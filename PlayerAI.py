@@ -21,6 +21,7 @@ class PlayerAI(BaseAI):
         self.__max_free_tile_value = self.__free_tile_value + 2
         self.__bonus = 16
         self.__weigths = ([0, 1, 2, 3], [1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6])
+        self.__depth = 0
         #
         # [0,1,2,3]
         # [1,2,3,4]
@@ -31,12 +32,15 @@ class PlayerAI(BaseAI):
 
     def getMove(self, grid):
         self.prevTime = time.clock()
+        self.__depth = 0
         (move, state, v) = self.maximize(grid, -sys.maxint, sys.maxint)
+        print ("Depth: ", self.__depth)
         return move
 
     #state.children para max son los cuatro posibles movimientos
     #               para min son todos los cuadros vacios * 2
     def maximize(self, state, alpha, beta):
+        self.__depth = self.__depth + 1
         if self.terminal_test(state):
             return None, None, self.utility(state)
         (move, maxChild, maxUtility) = (None, None, -sys.maxint)
@@ -53,6 +57,7 @@ class PlayerAI(BaseAI):
         return move, maxChild, maxUtility
 
     def minimize(self, state, alpha, beta):
+        self.__depth = self.__depth + 1
         if self.terminal_test(state):
             return None, None, self.utility(state)
         (move, minChild, minUtility) = (None, None, sys.maxint)
@@ -68,7 +73,7 @@ class PlayerAI(BaseAI):
                         if utility < minUtility:
                             (move, minChild, minUtility) = (None, child, utility)
                         if minUtility <= alpha:
-                            return move, minChild, minUtility
+                            break
                         if minUtility < beta:
                             beta = minUtility
         return move, minChild, minUtility
