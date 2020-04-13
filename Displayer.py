@@ -1,5 +1,8 @@
 from BaseDisplayer import BaseDisplayer
+from Grid import Grid
 import platform
+from graphics import *
+from copy import deepcopy
 import os
 
 _DEBUG_LEVEL = 0
@@ -28,7 +31,12 @@ cTemp = "\x1b[%dm%7s\x1b[0m "
 
 
 class Displayer(BaseDisplayer):
-    def __init__(self):
+    def __init__(self, size=4):
+        self.__size = size
+        self.__screen_size = self.__size * 100
+        self.__square_size = self.__screen_size / self.__size
+        self.__win = None
+        self.__my_grid = None
         if "Windows" == platform.system():
             self.display = self.winDisplay
         else:
@@ -36,6 +44,54 @@ class Displayer(BaseDisplayer):
 
     def display(self, grid):
         pass
+
+    def openVGrid(self):
+        self.__win = GraphWin("2048", self.__screen_size, self.__screen_size)
+        self.__win.setBackground("black")
+        for y in range(self.__size):
+            for x in range(self.__size):
+                rect = Rectangle(Point(self.__square_size * x, self.__square_size * y),
+                                 Point(self.__square_size * (x + 1), self.__square_size * (y + 1)))
+                rect.setOutline("white")
+                rect.setWidth(5)
+                rect.draw(self.__win)
+        return
+
+    def printVGrid(self, grid):
+        if self.__my_grid is not None:
+            i = 0
+            for y in range(self.__size):
+                for x in range(self.__size):
+                    message = Text(Point(self.__square_size * x + self.__square_size / 2,
+                                         self.__square_size * y + self.__square_size / 2), self.__my_grid.map[x][y])
+                    message.setSize(35)
+                    message.setTextColor("black")
+                    message.draw(self.__win)
+                    i = i + 1
+        i = 0
+        for y in range(self.__size):
+            for x in range(self.__size):
+                message = Text(Point(self.__square_size * x + self.__square_size / 2,
+                                     self.__square_size * y + self.__square_size / 2), grid.map[x][y])
+                message.setSize(35)
+                if grid.map[x][y] == 0:
+                    message.setTextColor("green")
+                else:
+                    message.setTextColor("gray")
+                message.draw(self.__win)
+                i = i + 1
+
+        self.__my_grid = Grid()
+        self.__my_grid.map = deepcopy(grid.map)
+        self.__my_grid.size = grid.getSize()
+
+        #time.sleep(0.3)
+        return
+
+
+    def closeVGrid(self):
+        self.__win.close()
+
 
     def winDisplay(self, grid):
         for i in xrange(grid.getSize()):

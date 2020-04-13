@@ -20,8 +20,10 @@ actionDic = {
 (PLAYER_TURN, COMPUTER_TURN) = (0, 1)
 
 # Time Limit Before Losing
-timeLimit = 0.2
-allowance = 0.05
+timeLimit = 0.5
+allowance = 0.5
+#timeLimit = 0.2
+#allowance = 0.05
 
 
 class GameManager:
@@ -62,6 +64,8 @@ class GameManager:
             self.insertRandonTile()
 
         self.__displayer.display(self.__grid)
+
+        self.__displayer.openVGrid()
 
         # Player AI Goes First
         turn = PLAYER_TURN
@@ -106,6 +110,7 @@ class GameManager:
 
             if not self.__over:
                 self.__displayer.display(self.__grid)
+                self.__displayer.printVGrid(self.__grid)
 
             # Exceeding the Time Allotted for Any Turn Terminates the Game
             if _DEBUG_LEVEL == 0:
