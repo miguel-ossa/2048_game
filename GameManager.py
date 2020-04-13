@@ -25,14 +25,14 @@ allowance = 0.05
 
 
 class GameManager:
-    def __init__(self, size=4):
+    def __init__(self, displayer, size=4):
         self.__grid = Grid(size)
         self.__possibleNewTiles = [2, 4]
         self.__probability = defaultProbability
         self.__initTiles = defaultInitialTiles
         self.__computerAI = None
         self.__playerAI = None
-        self.__displayer = None
+        self.__displayer = displayer
         self.__over = False
         self.__prevTime = None
 
@@ -63,7 +63,6 @@ class GameManager:
 
         #self.__displayer.display(self.__grid)
 
-        self.__displayer.openVGrid()
         self.__displayer.printVGrid(self.__grid)
 
         # Player AI Goes First
@@ -138,10 +137,11 @@ class GameManager:
 
 
 def main():
-    gameManager = GameManager()
+    displayer = Displayer()
+    displayer.openVGrid()
+    gameManager = GameManager(displayer)
     playerAI = PlayerAI()
     computerAI = ComputerAI()
-    displayer = Displayer()
 
     gameManager.setDisplayer(displayer)
     gameManager.setPlayerAI(playerAI)
@@ -149,7 +149,8 @@ def main():
 
     gameManager.start()
     
-    time.sleep(1000)
+    time.sleep(10)
+    displayer.closeVGrid()
 
 
 if __name__ == '__main__':

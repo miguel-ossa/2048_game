@@ -58,17 +58,6 @@ class Displayer(BaseDisplayer):
         return
 
     def printVGrid(self, grid):
-        # if self.__my_grid is not None:
-        #     i = 0
-        #     for y in range(self.__size):
-        #         for x in range(self.__size):
-        #             message = Text(Point(self.__square_size * x + self.__square_size / 2,
-        #                                  self.__square_size * y + self.__square_size / 2), self.__my_grid.map[x][y])
-        #             message.setSize(35)
-        #             message.setTextColor("black")
-        #             message.draw(self.__win)
-        #             i = i + 1
-
         for y in range(self.__size):
             for x in range(self.__size):
                 if self.__my_grid is not None:
@@ -92,8 +81,6 @@ class Displayer(BaseDisplayer):
         self.__my_grid = Grid()
         self.__my_grid.map = deepcopy(grid.map)
         self.__my_grid.size = grid.getSize()
-
-        #time.sleep(0.3)
         return
 
 
