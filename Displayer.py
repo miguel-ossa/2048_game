@@ -58,28 +58,36 @@ class Displayer(BaseDisplayer):
         return
 
     def printVGrid(self, grid):
-        if self.__my_grid is not None:
-            i = 0
-            for y in range(self.__size):
-                for x in range(self.__size):
-                    message = Text(Point(self.__square_size * x + self.__square_size / 2,
-                                         self.__square_size * y + self.__square_size / 2), self.__my_grid.map[x][y])
-                    message.setSize(35)
-                    message.setTextColor("black")
-                    message.draw(self.__win)
-                    i = i + 1
-        i = 0
+        # if self.__my_grid is not None:
+        #     i = 0
+        #     for y in range(self.__size):
+        #         for x in range(self.__size):
+        #             message = Text(Point(self.__square_size * x + self.__square_size / 2,
+        #                                  self.__square_size * y + self.__square_size / 2), self.__my_grid.map[x][y])
+        #             message.setSize(35)
+        #             message.setTextColor("black")
+        #             message.draw(self.__win)
+        #             i = i + 1
+
         for y in range(self.__size):
             for x in range(self.__size):
-                message = Text(Point(self.__square_size * x + self.__square_size / 2,
-                                     self.__square_size * y + self.__square_size / 2), grid.map[x][y])
-                message.setSize(35)
-                if grid.map[x][y] == 0:
-                    message.setTextColor("green")
-                else:
-                    message.setTextColor("gray")
-                message.draw(self.__win)
-                i = i + 1
+                if self.__my_grid is not None:
+                    if self.__my_grid.map[x][y] != grid.map[x][y]:
+                        if self.__my_grid.map[x][y] != grid.map[x][y]:
+                            message = Text(Point(self.__square_size * x + self.__square_size / 2,
+                                                self.__square_size * y + self.__square_size / 2), self.__my_grid.map[x][y])
+                            message.setSize(35)
+                            message.setTextColor("black")
+                            message.draw(self.__win)
+                if self.__my_grid is None or self.__my_grid is not None and self.__my_grid.map[x][y] != grid.map[x][y]:
+                    message1 = Text(Point(self.__square_size * x + self.__square_size / 2,
+                                        self.__square_size * y + self.__square_size / 2), grid.map[x][y])
+                    message1.setSize(35)
+                    if grid.map[x][y] == 0:
+                        message1.setTextColor("green")
+                    else:
+                        message1.setTextColor("gray")
+                    message1.draw(self.__win)
 
         self.__my_grid = Grid()
         self.__my_grid.map = deepcopy(grid.map)

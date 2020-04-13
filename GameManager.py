@@ -20,10 +20,8 @@ actionDic = {
 (PLAYER_TURN, COMPUTER_TURN) = (0, 1)
 
 # Time Limit Before Losing
-timeLimit = 0.5
-allowance = 0.5
-#timeLimit = 0.2
-#allowance = 0.05
+timeLimit = 0.2
+allowance = 0.05
 
 
 class GameManager:
@@ -48,13 +46,13 @@ class GameManager:
         self.__displayer = displayer
 
     def updateAlarm(self, currTime):
-        if currTime - self.__prevTime > timeLimit + allowance:
-            self.__over = True
-        else:
-            while time.clock() - self.__prevTime < timeLimit + allowance:
-                pass
+        #if currTime - self.__prevTime > timeLimit + allowance:
+        #    self.__over = True
+        #else:
+        #    while time.clock() - self.__prevTime < timeLimit + allowance:
+        #        pass
 
-            self.__prevTime = time.clock()
+        self.__prevTime = time.clock()
 
     def updateAlarmTrick(self, currTime):
         self.__over = False
@@ -63,9 +61,10 @@ class GameManager:
         for i in xrange(self.__initTiles):
             self.insertRandonTile()
 
-        self.__displayer.display(self.__grid)
+        #self.__displayer.display(self.__grid)
 
         self.__displayer.openVGrid()
+        self.__displayer.printVGrid(self.__grid)
 
         # Player AI Goes First
         turn = PLAYER_TURN
@@ -109,7 +108,7 @@ class GameManager:
                     self.__over = True
 
             if not self.__over:
-                self.__displayer.display(self.__grid)
+                #self.__displayer.display(self.__grid)
                 self.__displayer.printVGrid(self.__grid)
 
             # Exceeding the Time Allotted for Any Turn Terminates the Game
@@ -149,6 +148,8 @@ def main():
     gameManager.setComputerAI(computerAI)
 
     gameManager.start()
+    
+    time.sleep(1000)
 
 
 if __name__ == '__main__':
