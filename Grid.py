@@ -4,16 +4,20 @@ from copy import deepcopy
 directionVectors = (UP_VEC, DOWN_VEC, LEFT_VEC, RIGHT_VEC) = ((-1, 0), (1, 0), (0, -1), (0, 1))
 vecIndex = [UP, DOWN, LEFT, RIGHT] = range(4)
 
+
 class Grid:
-    def __init__(self, size = 4):
-        self.size = size
-        self.map = [[0] * self.size for i in xrange(self.size)]
+    def __init__(self, size=4):
+        self.__size = size
+        self.map = [[0] * self.__size for i in xrange(self.__size)]
+
+    def getSize(self):
+        return self.__size
 
     # Make a Deep Copy of This Object
     def clone(self):
         gridCopy = Grid()
         gridCopy.map = deepcopy(self.map)
-        gridCopy.size = self.size
+        gridCopy.size = self.__size
 
         return gridCopy
 
@@ -28,8 +32,8 @@ class Grid:
     def getAvailableCells(self):
         cells = []
 
-        for x in xrange(self.size):
-            for y in xrange(self.size):
+        for x in xrange(self.__size):
+            for y in xrange(self.__size):
                 if self.map[x][y] == 0:
                     cells.append((x,y))
 
@@ -39,8 +43,8 @@ class Grid:
     def getMaxTile(self):
         maxTile = 0
 
-        for x in xrange(self.size):
-            for y in xrange(self.size):
+        for x in xrange(self.__size):
+            for y in xrange(self.__size):
                 maxTile = max(maxTile, self.map[x][y])
 
         return maxTile
@@ -64,11 +68,11 @@ class Grid:
 
     # Move Up or Down
     def moveUD(self, down):
-        r = range(self.size -1, -1, -1) if down else range(self.size)
+        r = range(self.__size -1, -1, -1) if down else range(self.__size)
 
         moved = False
 
-        for j in range(self.size):
+        for j in range(self.__size):
             cells = []
 
             for i in r:
@@ -91,11 +95,11 @@ class Grid:
 
     # move left or right
     def moveLR(self, right):
-        r = range(self.size - 1, -1, -1) if right else range(self.size)
+        r = range(self.__size - 1, -1, -1) if right else range(self.__size)
 
         moved = False
 
-        for i in range(self.size):
+        for i in range(self.__size):
             cells = []
 
             for j in r:
@@ -131,13 +135,13 @@ class Grid:
 
             i += 1
 
-    def canMove(self, dirs = vecIndex):
+    def canMove(self, dirs=vecIndex):
 
         # Init Moves to be Checked
         checkingMoves = Set(dirs)
 
-        for x in xrange(self.size):
-            for y in xrange(self.size):
+        for x in xrange(self.__size):
+            for y in xrange(self.__size):
 
                 # If Current Cell is Filled
                 if self.map[x][y]:
@@ -159,7 +163,7 @@ class Grid:
         return False
 
     # Return All Available Moves
-    def getAvailableMoves(self, dirs = vecIndex):
+    def getAvailableMoves(self, dirs=vecIndex):
         availableMoves = []
 
         for x in dirs:
@@ -171,13 +175,14 @@ class Grid:
         return availableMoves
 
     def crossBound(self, (x, y)):
-        return x < 0 or x >= self.size or y < 0 or y >= self.size
+        return x < 0 or x >= self.__size or y < 0 or y >= self.__size
 
     def getCellValue(self, pos):
         if not self.crossBound(pos):
             return self.map[pos[0]][pos[1]]
         else:
             return None
+
 
 if __name__ == '__main__':
     g = Grid()

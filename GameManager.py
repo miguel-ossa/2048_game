@@ -23,87 +23,89 @@ actionDic = {
 timeLimit = 0.2
 allowance = 0.05
 
+
 class GameManager:
-    def __init__(self, size = 4):
-        self.grid = Grid(size)
-        self.possibleNewTiles = [2, 4]
-        self.probability = defaultProbability
-        self.initTiles  = defaultInitialTiles
-        self.computerAI = None
-        self.playerAI   = None
-        self.displayer  = None
-        self.over       = False
+    def __init__(self, size=4):
+        self.__grid = Grid(size)
+        self.__possibleNewTiles = [2, 4]
+        self.__probability = defaultProbability
+        self.__initTiles = defaultInitialTiles
+        self.__computerAI = None
+        self.__playerAI = None
+        self.__displayer = None
+        self.__over = False
+        self.__prevTime = None
 
     def setComputerAI(self, computerAI):
-        self.computerAI = computerAI
+        self.__computerAI = computerAI
 
     def setPlayerAI(self, playerAI):
-        self.playerAI = playerAI
+        self.__playerAI = playerAI
 
     def setDisplayer(self, displayer):
-        self.displayer = displayer
+        self.__displayer = displayer
 
     def updateAlarm(self, currTime):
-        if currTime - self.prevTime > timeLimit + allowance:
-            self.over = True
+        if currTime - self.__prevTime > timeLimit + allowance:
+            self.__over = True
         else:
-            while time.clock() - self.prevTime < timeLimit + allowance:
+            while time.clock() - self.__prevTime < timeLimit + allowance:
                 pass
 
-            self.prevTime = time.clock()
+            self.__prevTime = time.clock()
 
     def updateAlarmTrick(self, currTime):
-        self.over = False
+        self.__over = False
 
     def start(self):
-        for i in xrange(self.initTiles):
+        for i in xrange(self.__initTiles):
             self.insertRandonTile()
 
-        self.displayer.display(self.grid)
+        self.__displayer.display(self.__grid)
 
         # Player AI Goes First
         turn = PLAYER_TURN
         maxTile = 0
 
-        self.prevTime = time.clock()
+        self.__prevTime = time.clock()
 
-        while not self.isGameOver() and not self.over:
+        while not self.isGameOver() and not self.__over:
             # Copy to Ensure AI Cannot Change the Real Grid to Cheat
-            gridCopy = self.grid.clone()
+            gridCopy = self.__grid.clone()
 
             move = None
 
             if turn == PLAYER_TURN:
                 print "Player's Turn:",
-                move = self.playerAI.getMove(gridCopy)
+                move = self.__playerAI.getMove(gridCopy)
                 print actionDic[move]
 
                 # Validate Move
-                if move != None and move >= 0 and move < 4:
-                    if self.grid.canMove([move]):
-                        self.grid.move(move)
+                if move is not None and 0 <= move < 4:
+                    if self.__grid.canMove([move]):
+                        self.__grid.move(move)
 
                         # Update maxTile
-                        maxTile = self.grid.getMaxTile()
+                        maxTile = self.__grid.getMaxTile()
                     else:
                         print "Invalid PlayerAI Move"
-                        self.over = True
+                        self.__over = True
                 else:
                     print "Invalid PlayerAI Move - 1"
-                    self.over = True
+                    self.__over = True
             else:
                 print "Computer's turn:"
-                move = self.computerAI.getMove(gridCopy)
+                move = self.__computerAI.getMove(gridCopy)
 
                 # Validate Move
-                if move and self.grid.canInsert(move):
-                    self.grid.setCellValue(move, self.getNewTileValue())
+                if move and self.__grid.canInsert(move):
+                    self.__grid.setCellValue(move, self.getNewTileValue())
                 else:
                     print "Invalid Computer AI Move"
-                    self.over = True
+                    self.__over = True
 
-            if not self.over:
-                self.displayer.display(self.grid)
+            if not self.__over:
+                self.__displayer.display(self.__grid)
 
             # Exceeding the Time Allotted for Any Turn Terminates the Game
             if _DEBUG_LEVEL == 0:
@@ -113,34 +115,36 @@ class GameManager:
 
             turn = 1 - turn
         print maxTile
-        #print self.playerAI.getMaxDepth()
+        #print self.__playerAI.getMaxDepth()
 
     def isGameOver(self):
-        return not self.grid.canMove()
+        return not self.__grid.canMove()
 
     def getNewTileValue(self):
-        if randint(0,99) < 100 * self.probability:
-            return self.possibleNewTiles[0]
+        if randint(0,99) < 100 * self.__probability:
+            return self.__possibleNewTiles[0]
         else:
-            return self.possibleNewTiles[1];
+            return self.__possibleNewTiles[1]
 
     def insertRandonTile(self):
         tileValue = self.getNewTileValue()
-        cells = self.grid.getAvailableCells()
+        cells = self.__grid.getAvailableCells()
         cell = cells[randint(0, len(cells) - 1)]
-        self.grid.setCellValue(cell, tileValue)
+        self.__grid.setCellValue(cell, tileValue)
+
 
 def main():
     gameManager = GameManager()
-    playerAI  	= PlayerAI()
-    computerAI  = ComputerAI()
-    displayer 	= Displayer()
+    playerAI = PlayerAI()
+    computerAI = ComputerAI()
+    displayer = Displayer()
 
     gameManager.setDisplayer(displayer)
     gameManager.setPlayerAI(playerAI)
     gameManager.setComputerAI(computerAI)
 
     gameManager.start()
+
 
 if __name__ == '__main__':
     main()
